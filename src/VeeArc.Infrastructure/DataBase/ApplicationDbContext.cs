@@ -19,7 +19,14 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options)
-    { }
+    {
+
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.LogTo(Console.WriteLine);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

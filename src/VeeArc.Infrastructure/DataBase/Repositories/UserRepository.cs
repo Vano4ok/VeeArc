@@ -17,9 +17,4 @@ public class UserRepository : BaseDbRepository<User>, IUserRepository
                     .Include(user => user.Articles)
                     .FirstOrDefaultAsync(user => user.Id == id);
     }
-
-    public override IQueryable<User> GetAll()
-    {
-        return DbSet.Include(user => user.Roles);
-    }
 }

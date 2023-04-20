@@ -13,13 +13,13 @@ public class DatabaseInitService : IHostedService
     {
         _serviceProvider = serviceProvider;
     }
-    
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var applicationDbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-        
-        if(applicationDbContext is DbContext dbContext)
+
+        if (applicationDbContext is DbContext dbContext)
         {
             await dbContext.Database.MigrateAsync(cancellationToken);
         }

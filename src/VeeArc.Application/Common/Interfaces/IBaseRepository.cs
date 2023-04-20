@@ -12,8 +12,6 @@ public interface IBaseRepository<T> where T : BaseEntity
 
     Task<T?> GetByIdAsync(int id);
 
-    IQueryable<T> GetAll();
-
     void Remove(T entity);
 
     Task SaveAsync();

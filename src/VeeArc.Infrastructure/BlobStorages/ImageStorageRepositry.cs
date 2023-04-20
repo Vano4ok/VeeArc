@@ -9,19 +9,19 @@ public class ImageStorageRepositry : IImageStorageRepositry
 {
     private const string StorageContainerName = "images";
 
-    private BlobContainerClient _blobContainerClient;
+    private readonly BlobContainerClient _blobContainerClient;
 
     public ImageStorageRepositry(BlobServiceClient blobServiceClient)
     {
         _blobContainerClient = blobServiceClient.GetBlobContainerClient(StorageContainerName);
     }
 
-    public async Task<string> UploadImage(IFormFile image)
+    public async Task<string> UploadImage(IFormFile image, CancellationToken cancellationToken)
     {
         string imageName = CreateImageName();
 
         using Stream data = image.OpenReadStream();
-        await _blobContainerClient.UploadBlobAsync(imageName, data);
+        await _blobContainerClient.UploadBlobAsync(imageName, data, cancellationToken);
 
         string imageUri = CreateImageUri(imageName);
 
@@ -35,7 +35,7 @@ public class ImageStorageRepositry : IImageStorageRepositry
         blobContainerClient.CreateIfNotExists(PublicAccessType.BlobContainer);
     }
 
-    private string CreateImageName()
+    private static string CreateImageName()
     {
         string imageName = Guid.NewGuid().ToString() + ".png";
 
