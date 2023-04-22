@@ -3,7 +3,10 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using FluentValidation.AspNetCore;
 using VeeArc.Application.Common.Behaviours;
+using VeeArc.Application.Common.Interfaces;
+using VeeArc.Application.Common.Services;
 
 namespace VeeArc.Application;
 
@@ -19,7 +22,10 @@ public static class DependencyInjection
         });
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
 
+        services.AddTransient<IPasswordHashService, PasswordHashService>();
+        
         return services;
     }
 }
