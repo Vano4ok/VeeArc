@@ -34,12 +34,7 @@ public abstract class BaseDbRepository<T> : IBaseRepository<T> where T : BaseEnt
 
     public virtual async Task<T?> GetByIdAsync(int id)
     {
-        return await DbSet.FirstOrDefaultAsync(entity => entity.Id == id);
-    }
-
-    public virtual IQueryable<T> GetAll()
-    {
-        return DbSet;
+        return await DbSet.FindAsync(new object[] { id });
     }
 
     public void Remove(T entity)

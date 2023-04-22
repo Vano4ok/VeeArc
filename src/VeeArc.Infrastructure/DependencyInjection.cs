@@ -16,7 +16,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<DatabaseInitService>();
-        
+
         services.ConfigureApplicationDbContext(configuration);
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
@@ -38,8 +38,10 @@ public static class DependencyInjection
         services.AddSingleton(blobServiceClient);
 
         services.AddScoped<IImageStorageRepositry, ImageStorageRepositry>();
+        services.AddScoped<IArticleStorageRepository, ArticleStorageRepository>();
 
         ImageStorageRepositry.Init(blobServiceClient);
+        ArticleStorageRepository.Init(blobServiceClient);
 
         return services;
     }

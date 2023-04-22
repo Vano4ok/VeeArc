@@ -14,9 +14,9 @@ namespace VeeArc.WebAPI.Controllers
                 Image = image,
             };
 
-            var result = await Mediator.Send(command);
+            string imageUrl = await Mediator.Send(command);
 
-            return Ok(result);
+            return Ok(imageUrl);
         }
     }
 }

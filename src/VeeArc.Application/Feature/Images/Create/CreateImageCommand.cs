@@ -20,7 +20,7 @@ public class CreateImageCommandHandler : IRequestHandler<CreateImageCommand, str
 
     public async Task<string> Handle(CreateImageCommand request, CancellationToken cancellationToken)
     {
-        string url = await _imageStorageRepositry.UploadImage(request.Image);
+        string url = await _imageStorageRepositry.UploadImage(request.Image, cancellationToken);
 
         return url;
     }
