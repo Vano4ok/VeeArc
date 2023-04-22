@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using VeeArc.Application.Common.Interfaces;
@@ -11,24 +11,28 @@ public record UpdateUserCommand : IRequest<UserResponse>
 {
     public required int Id { get; init; }
     
-    public required string FirstName { get; init; }
+    public string FirstName { get; init; }
 
-    public required string LastName { get; init; }
+    public string LastName { get; init; }
 
-    public required string Email { get; init; } 
+    public string Email { get; init; } 
     
-    public required string Password { get; init; }
+    public string Password { get; init; }
 }
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserResponse>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHashService _passwordHashService;
-    
-    public UpdateUserCommandHandler(IUserRepository userRepository, IPasswordHashService passwordHashService)
+    private readonly IMapper _mapper;
+
+    public UpdateUserCommandHandler(IUserRepository userRepository,
+                                    IPasswordHashService passwordHashService,
+                                    IMapper mapper)
     {
         _userRepository = userRepository;
         _passwordHashService = passwordHashService;
+        _mapper = mapper;
     }
     
     public async Task<UserResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -61,6 +65,8 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserR
         
         await _userRepository.SaveAsync();
 
-        return user;
+        UserResponse response = _mapper.Map<UserResponse>(user);
+
+        return response;
     }
 }

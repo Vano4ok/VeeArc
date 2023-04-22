@@ -1,9 +1,11 @@
+using AutoMapper;
 using MediatR;
 using VeeArc.Application.Common.Interfaces;
+using VeeArc.Application.Common.Mappings;
 
 namespace VeeArc.Application.Feature.User.Create;
 
-public class CreateUserCommand : IRequest<Domain.Entities.User>
+public class CreateUserCommand : IRequest<UserResponse>
 {
     public required string Username { get; init; }
     
@@ -17,18 +19,22 @@ public class CreateUserCommand : IRequest<Domain.Entities.User>
 }
 
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Domain.Entities.User>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserResponse>
 { 
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHashService _passwordHasher;
-    
-    public CreateUserCommandHandler(IUserRepository userRepository, IPasswordHashService passwordHasher)
+    private readonly IMapper _mapper;
+
+    public CreateUserCommandHandler(IUserRepository userRepository,
+                                    IPasswordHashService passwordHasher,
+                                    IMapper mapper)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _mapper = mapper;
     }
 
-    public async Task<Domain.Entities.User> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<UserResponse> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
         string hashedPassword = _passwordHasher.Hash(command.Password);
         
@@ -45,6 +51,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Domai
         
         await _userRepository.SaveAsync();
 
-        return user;
+        UserResponse response = _mapper.Map<UserResponse>(user);
+        
+        return response;
     }
 }

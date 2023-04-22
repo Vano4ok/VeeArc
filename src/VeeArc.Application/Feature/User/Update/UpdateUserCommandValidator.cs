@@ -12,24 +12,29 @@ public class UpdateUserModelCommandValidator : AbstractValidator<UpdateUserComma
     {
         _userRepository = userRepository;
         
-        RuleFor(user => user.Id).MustAsync(BeExistingUser)
+        RuleFor(user => user.Id).GreaterThanOrEqualTo(0)
+            .MustAsync(BeExistingUser)
             .WithMessage("User with given id does not exist");
         
         RuleFor(user => user.FirstName)
             .MaximumLength(25)
-            .NotEmpty();
-
+            .NotEmpty()
+            .When(user => !string.IsNullOrEmpty(user.FirstName));
+        
         RuleFor(user => user.LastName)
             .MaximumLength(45)
-            .NotEmpty();
+            .NotEmpty()
+            .When(user => !string.IsNullOrEmpty(user.LastName));
 
         RuleFor(user => user.Email)
             .EmailAddress()
-            .NotEmpty();
+            .NotEmpty()
+            .When(user => !string.IsNullOrEmpty(user.Email));
 
         RuleFor(user => user.Password)
             .MaximumLength(200)
-            .Must(x => string.IsNullOrEmpty(x) || x.Length >= 8)
+            .MinimumLength(8)
+            .When(user => !string.IsNullOrEmpty(user.Password))
             .WithMessage("Password must be at least 8 characters long");
     }
 

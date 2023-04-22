@@ -1,14 +1,18 @@
+using VeeArc.Application.Common.Mappings;
+using VeeArc.Domain.Entities;
+using DomainUser = VeeArc.Domain.Entities.User;
+
 namespace VeeArc.Application.Feature.User;
 
-public record UserResponse
+public class UserResponse : IMapFrom<DomainUser>
 {
-    public required int Id { get; init; }
+    public int Id { get; set; }
     
-    public required string FirstName { get; init; }
+    public string FirstName { get; set; }
 
-    public required string LastName { get; init; }
+    public string LastName { get; set; }
 
-    public required string Email { get; init; } 
+    public string Email { get; set; }
     
-    public required string Password { get; init; }
+    public List<Role> Roles { get; set; }
 }

@@ -18,9 +18,9 @@ public class UserRepository : BaseDbRepository<User>, IUserRepository
                     .FirstOrDefaultAsync(user => user.Id == id);
     }
 
-    public override IQueryable<User> GetAll()
+    public async Task<List<User>> GetAll()
     {
-        return DbSet.Include(user => user.Roles);
+        return await DbSet.Include(user => user.Roles).ToListAsync();
     }
 
     public Task<User?> GetByUsernameAsync(string username)

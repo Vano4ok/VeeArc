@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using VeeArc.Application.Feature.Authenticate;
+using VeeArc.Application.Feature.User;
 using VeeArc.Application.Feature.User.Create;
 using VeeArc.Application.Feature.User.Delete;
+using VeeArc.Application.Feature.User.Get;
 using VeeArc.Application.Feature.User.Update;
 using VeeArc.Domain.Entities;
 
@@ -13,7 +15,7 @@ public class UserController : ApiControllerBase
     [HttpPost] 
     public async Task<IActionResult> CreateUser(CreateUserCommand createUserCommand)
     {
-        User user = await Mediator.Send(createUserCommand);
+        UserResponse user = await Mediator.Send(createUserCommand);
         
         return Ok(user);
     }
@@ -26,7 +28,7 @@ public class UserController : ApiControllerBase
             return BadRequest();
         }    
         
-        User user = await Mediator.Send(updateUserCommand);
+        UserResponse user = await Mediator.Send(updateUserCommand);
 
         return Ok(user);
     }
@@ -45,8 +47,16 @@ public class UserController : ApiControllerBase
     }
     
     [HttpGet] 
-    public async Task<IActionResult> GetUser(int id){
-        return Ok();
+    public async Task<IActionResult> GetUser(int id)
+    {
+        var query = new GetUserQuery()
+        {
+            Id = id
+        };
+        
+        UserResponse user = await Mediator.Send(query);
+        
+        return Ok(user);
     }
     
     [HttpPost("authenticate")]
