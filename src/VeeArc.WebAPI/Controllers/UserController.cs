@@ -5,7 +5,7 @@ using VeeArc.Application.Feature.User.Create;
 using VeeArc.Application.Feature.User.Delete;
 using VeeArc.Application.Feature.User.Get;
 using VeeArc.Application.Feature.User.Update;
-using VeeArc.Domain.Entities;
+using VeeArc.WebAPI.Request.Users;
 
 namespace VeeArc.WebAPI.Controllers;
 
@@ -13,28 +13,41 @@ namespace VeeArc.WebAPI.Controllers;
 public class UserController : ApiControllerBase
 {
     [HttpPost] 
-    public async Task<IActionResult> CreateUser(CreateUserCommand createUserCommand)
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
-        UserResponse user = await Mediator.Send(createUserCommand);
+        var command = new CreateUserCommand()
+        {
+            Username = request.Username,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            Password = request.Password
+        };
+        
+        UserResponse user = await Mediator.Send(command);
         
         return Ok(user);
     }
     
-    [HttpPatch] 
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserCommand updateUserCommand)
+    [HttpPatch("{id}")] 
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequest request)
     {
-        if(id != updateUserCommand.Id)
+        var command = new UpdateUserCommand()
         {
-            return BadRequest();
-        }    
+            Id = id,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            Password = request.Password
+        };
         
-        UserResponse user = await Mediator.Send(updateUserCommand);
+        UserResponse user = await Mediator.Send(command);
 
         return Ok(user);
     }
     
-    [HttpDelete] 
-    public async Task<IActionResult> DeleteUser(int id)
+    [HttpDelete("{id}")] 
+    public async Task<IActionResult> Delete([FromRoute] int id)
     {
         var deleteCommand = new DeleteUserCommand()
         {
@@ -46,8 +59,8 @@ public class UserController : ApiControllerBase
         return NoContent();
     }
     
-    [HttpGet] 
-    public async Task<IActionResult> GetUser(int id)
+    [HttpGet("{id}")] 
+    public async Task<IActionResult> Get([FromRoute] int id)
     {
         var query = new GetUserQuery()
         {
@@ -60,9 +73,15 @@ public class UserController : ApiControllerBase
     }
     
     [HttpPost("authenticate")]
-    public async Task<IActionResult> AuthenticateUser(AuthenticateCommand authenticateCommand)
+    public async Task<IActionResult> Authenticate([FromBody] AuthenticateUserRequest request)
     {
-        Jwt token = await Mediator.Send(authenticateCommand);
+        var command = new AuthenticateCommand()
+        {
+            Password = request.Password,
+            Username = request.Username
+        };
+        
+        Jwt token = await Mediator.Send(command);
         
         return Ok(token);
     }

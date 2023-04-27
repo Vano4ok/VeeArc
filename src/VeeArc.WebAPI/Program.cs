@@ -9,8 +9,8 @@ using VeeArc.Application.Common.Interfaces;
 using VeeArc.Application.Common.Settings;
 using VeeArc.Domain.Entities;
 using VeeArc.Infrastructure;
+using VeeArc.WebAPI.Authentication;
 using VeeArc.WebAPI.Filter;
-using VeeArc.WebAPI.Middleware;
 using VeeArc.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
