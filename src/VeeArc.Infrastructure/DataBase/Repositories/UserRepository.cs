@@ -18,7 +18,7 @@ public class UserRepository : BaseDbRepository<User>, IUserRepository
                     .FirstOrDefaultAsync(user => user.Id == id);
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<List<User>> GetAllAsync()
     {
         return await DbSet.Include(user => user.Roles).ToListAsync();
     }

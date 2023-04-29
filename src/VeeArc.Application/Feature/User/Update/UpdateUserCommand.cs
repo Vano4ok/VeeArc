@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,28 +40,14 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserR
     {
         DomainUser? user = await _userRepository.GetByIdAsync(request.Id);
 
-        if (!string.IsNullOrEmpty(request.Email))
-        {
-            user.Email = request.Email;
-        }
+        TrySetEmail(request.Email, user);
 
-        if (!string.IsNullOrEmpty(request.FirstName))
-        {
-            user.FirstName = request.FirstName;
-        }
+        TrySetFirstname(request.FirstName, user);
         
-        if(!string.IsNullOrEmpty(request.LastName))
-        {
-            user.LastName = request.LastName;
-        }
+        TrySetLastname(request.LastName, user);
         
-        if(!string.IsNullOrEmpty(request.Password))
-        {
-            string hashedPassword = _passwordHashService.Hash(request.Password);
-            
-            user.Password = hashedPassword;
-        }
-        
+        TrySetPassword(request.Password, user);
+
         _userRepository.Update(user);
         
         await _userRepository.SaveAsync();
@@ -68,5 +55,39 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserR
         UserResponse response = _mapper.Map<UserResponse>(user);
 
         return response;
+    }
+    
+    private void TrySetEmail(string email, DomainUser user)
+    {
+        if (!string.IsNullOrEmpty(email))
+        {
+            user.Email = email;
+        }
+    }
+    
+    private void TrySetFirstname(string firstname, DomainUser user)
+    {
+        if (!string.IsNullOrEmpty(firstname))
+        {
+            user.FirstName = firstname;
+        }
+    }
+    
+    private void TrySetLastname(string lastname, DomainUser user)
+    {
+        if (!string.IsNullOrEmpty(lastname))
+        {
+            user.LastName = lastname;
+        }
+    }
+    
+    private void TrySetPassword(string password, DomainUser user)
+    {
+        if (!string.IsNullOrEmpty(password))
+        {
+            string hashedPassword = _passwordHashService.Hash(password);
+            
+            user.Password = hashedPassword;
+        }
     }
 }

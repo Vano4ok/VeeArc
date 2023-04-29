@@ -24,7 +24,7 @@ public class GetUsersHandler : IRequestHandler<GetUsersQuery, List<UserResponse>
     
     public async Task<List<UserResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        List<DomainUser> users = await _userRepository.GetAll();
+        List<DomainUser> users = await _userRepository.GetAllAsync();
 
         List<UserResponse> userResponses = _mapper.Map<List<DomainUser>, List<UserResponse>>(users);
 

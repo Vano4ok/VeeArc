@@ -30,6 +30,8 @@ public class AuthenticateCommandValidator : AbstractValidator<AuthenticateComman
             return false;
         }
 
-        return _passwordHashService.VerifyHashedPassword(user.Password, command.Password);
+        bool isCorrectPassword = _passwordHashService.VerifyHashedPassword(user.Password, command.Password);
+
+        return isCorrectPassword;
     }
 }
