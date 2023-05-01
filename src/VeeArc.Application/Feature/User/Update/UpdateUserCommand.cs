@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,9 +41,9 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserR
 
         TrySetEmail(request.Email, user);
 
-        TrySetFirstname(request.FirstName, user);
+        TrySetFirstName(request.FirstName, user);
         
-        TrySetLastname(request.LastName, user);
+        TrySetLastName(request.LastName, user);
         
         TrySetPassword(request.Password, user);
 
@@ -65,19 +64,19 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserR
         }
     }
     
-    private void TrySetFirstname(string firstname, DomainUser user)
+    private void TrySetFirstName(string firstName, DomainUser user)
     {
-        if (!string.IsNullOrEmpty(firstname))
+        if (!string.IsNullOrEmpty(firstName))
         {
-            user.FirstName = firstname;
+            user.FirstName = firstName;
         }
     }
     
-    private void TrySetLastname(string lastname, DomainUser user)
+    private void TrySetLastName(string lastName, DomainUser user)
     {
-        if (!string.IsNullOrEmpty(lastname))
+        if (!string.IsNullOrEmpty(lastName))
         {
-            user.LastName = lastname;
+            user.LastName = lastName;
         }
     }
     

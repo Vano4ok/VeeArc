@@ -1,13 +1,9 @@
-using System.Security.Claims;
-using System.Text;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using VeeArc.Application;
 using VeeArc.Application.Common.Interfaces;
 using VeeArc.Application.Common.Settings;
-using VeeArc.Domain.Entities;
 using VeeArc.Infrastructure;
 using VeeArc.WebAPI.Authentication;
 using VeeArc.WebAPI.Filter;

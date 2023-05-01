@@ -14,8 +14,14 @@ public class CurrentUserService : ICurrentUserService
 
     private void SetUserId(IHttpContextAccessor httpContextAccessor)
     {
-        if (int.TryParse(httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out int userId))
+        string? contextUserId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (contextUserId is null)
+        {
+            return;
+        }
+        
+        if (int.TryParse(contextUserId, out int userId))
         {
             UserId = userId;
         }

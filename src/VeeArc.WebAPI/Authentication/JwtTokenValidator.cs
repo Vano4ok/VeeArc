@@ -26,7 +26,7 @@ public class JwtTokenValidator : ISecurityTokenValidator
 
     public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
     {
-        var key = Encoding.ASCII.GetBytes(_secretKey);
+        byte[] key = Encoding.ASCII.GetBytes(_secretKey);
 
         var tokenValidationParameters = new TokenValidationParameters
         { 
@@ -37,6 +37,8 @@ public class JwtTokenValidator : ISecurityTokenValidator
             ValidateLifetime = true
         };
 
-        return _tokenHandler.ValidateToken(securityToken, tokenValidationParameters, out validatedToken);
+        ClaimsPrincipal claimsPrincipal = _tokenHandler.ValidateToken(securityToken, tokenValidationParameters, out validatedToken);
+
+        return claimsPrincipal;
     }
 }
