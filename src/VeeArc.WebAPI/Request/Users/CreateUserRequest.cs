@@ -2,8 +2,6 @@ namespace VeeArc.WebAPI.Request.Users;
 
 public record CreateUserRequest
 {
-    public required int Id { get; init; }
-    
     public required string FirstName { get; init; }
     
     public required string LastName { get; init; }
