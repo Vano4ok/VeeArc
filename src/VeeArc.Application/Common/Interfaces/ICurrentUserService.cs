@@ -1,6 +1,6 @@
-﻿namespace VeeArc.Application.Common.Interfaces;
+namespace VeeArc.Application.Common.Interfaces;
 
 public interface ICurrentUserService
 {
-    int? UserId { get; }
+    public int? UserId { get; }
 }

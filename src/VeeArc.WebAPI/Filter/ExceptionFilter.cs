@@ -15,6 +15,7 @@ public class ExceptionFilter : IExceptionFilter
         {
             { typeof(ValidationException), HandleValidationException },
             { typeof(NotFoundException), HandleNotFoundException },
+            { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
         };
     }
 
@@ -55,5 +56,18 @@ public class ExceptionFilter : IExceptionFilter
         };
 
         context.Result = new NotFoundObjectResult(details);
+    }
+
+    private void HandleUnauthorizedAccessException(ExceptionContext context)
+    {
+        var exception = (UnauthorizedAccessException)context.Exception;
+        
+        var details = new ProblemDetails()
+        {
+            Title = "You are not authorized to access this resource.",
+            Detail = exception.Message
+        };
+
+        context.Result = new UnauthorizedObjectResult(details);
     }
 }

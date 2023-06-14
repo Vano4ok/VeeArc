@@ -1,13 +1,15 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using VeeArc.Application;
 using VeeArc.Application.Common.Interfaces;
+using VeeArc.Application.Common.Settings;
 using VeeArc.Infrastructure;
+using VeeArc.WebAPI.Authentication;
 using VeeArc.WebAPI.Filter;
 using VeeArc.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -18,26 +20,37 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ExceptionFilter>();
 });
 
-builder.Services.AddFluentValidationAutoValidation(opt =>
+builder.Services.AddFluentValidation(opt =>
 {
     opt.DisableDataAnnotationsValidation = true;
+    opt.LocalizationEnabled = false;
 });
 
-builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddOptions<JwtOptions>()
+                .Bind(builder.Configuration.GetSection(JwtOptions.SectionName));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddCors(options =>
+builder.Services.AddSwaggerGen(option =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.SecurityTokenValidators.Clear();
+                    options.SecurityTokenValidators.Add(
+                        new JwtTokenValidator(builder.Configuration.GetValue<string>("Jwt:SecretKey")));
+                });
+
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 var app = builder.Build();
 
@@ -47,11 +60,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAll");
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
